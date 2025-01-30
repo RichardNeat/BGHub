@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public User Owner { get; set; }
         public int BGGId { get; set; }
-        public string Image { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
