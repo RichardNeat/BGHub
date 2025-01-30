@@ -1,0 +1,29 @@
+﻿@using BGHub.Models
+
+<div class="card shadow-sm p-3 mt-4">
+    <div class="card-body">
+        <h3 class="card-title mb-3">Current Bring List</h3>
+        @if (Games.Any())
+        {
+            <ul class="list-unstyled">
+                @foreach (Game game in Games)
+                {
+                    <GameCard Game="game"/>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">No games have been added yet. Be the first to bring one!</p>
+        }
+    </div>
+</div>
+
+@code {
+    public List<Game> Games { get; set; } = new List<Game>
+    {
+        new Game {Id=3, Name="Nova Luna", Owner=new User{ Id=2, Name="Haz"}, BGGId=284435},
+        new Game {Id=2, Name="Slay the Spire", Owner=new User{ Id=1, Name="Rich"}, BGGId=338960},
+        new Game {Id=1, Name="Terraforming Mars", Owner=new User{ Id=1, Name="Rich"}, BGGId=167791},
+    };
+}

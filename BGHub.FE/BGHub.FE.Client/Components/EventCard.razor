@@ -1,0 +1,40 @@
+﻿@using BGHub.Models
+<div class="card h-100">
+    <div class="card-header bg-dark text-white">
+        <h5 class="card-title">@Event.Name</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <strong>Start Date:</strong> @Event.StartDate.ToString("MMMM dd, yyyy") <br />
+            <strong>End Date:</strong> @Event.EndDate.ToString("MMMM dd, yyyy")
+        </p>
+        <p class="card-text">
+            <strong>Status:</strong>
+            @if (Event.StartDate > DateTime.Now)
+            {
+                <span class="badge bg-success">Upcoming</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Past Event</span>
+            }
+        </p>
+    </div>
+    <div class="card-footer text-muted d-flex align-items-center">
+        @if (Event.StartDate > DateTime.Now)
+        {
+            <button class="btn btn-primary btn-sm">Register</button>
+        }
+        else
+        {
+            <button class="btn btn-outline-secondary btn-sm" disabled>Event Closed</button>
+        }
+        <NavLink class="ms-auto" href="@($"/events/{Event.Id}")">
+            <button class="btn btn-info btn-sm">View Event Details</button>
+        </NavLink>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Event Event { get; set; }
+}

@@ -1,0 +1,13 @@
+﻿@page "/StatusCode/{Status:int}"
+
+<h3>Uh oh there has been a problem!</h3>
+
+@if (Status == 404)
+{
+    <BGHub.FE.Client.Components.ErrorComponents._404 />
+}
+
+@code {
+    [Parameter]
+    public int Status { get; set; }
+}

@@ -1,0 +1,28 @@
+﻿@using BGHub.Models
+
+<div class="card shadow-sm p-3 mt-4 mb-4">
+    <div class="card-body">
+        <h6 class="card-title mb-3">Bring a game to this event:</h6>
+
+        <EditForm Model="Model" OnValidSubmit="OnSubmit">
+            <div class="mb-3">
+                <InputSelect @bind-Value="Model.Name" id="gameSelect" class="form-select">
+                    <option disabled selected>-- Select a Game --</option>
+                    <option>Game1</option> @*Change to a list of the games the user owns*@
+                    <option>Game2</option>
+                </InputSelect>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Add Game</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    public Game Model = new();
+
+    public void OnSubmit()
+    {
+        // Call to DB to add game to event
+    }
+}

@@ -1,0 +1,18 @@
+﻿@using BGHub.Models
+
+<li class="mb-3">
+    <div class="card">
+        <div class="card-header bg-light">
+            <h4 class="card-title">@Game.Name</h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Owned by: @Game.Owner.Name</p>
+        </div>
+    </div>
+</li>
+
+@code {
+    [Parameter] public Game Game { get; set; }
+
+
+}

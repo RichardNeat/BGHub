@@ -1,0 +1,62 @@
+﻿@page "/events/{Id:int}"
+@using BGHub.FE.Client.Components.GamesComponents
+@using BGHub.Models
+
+@if (Event != null)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5>@Event.Name</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                <strong>Start Date:</strong> @Event.StartDate.ToString("MMMM dd, yyyy") <br />
+                <strong>End Date:</strong> @Event.EndDate.ToString("MMMM dd, yyyy")
+            </p>
+            <p>
+                <strong>Status:</strong>
+                @if (Event.StartDate > DateTime.Now)
+                {
+                    <span class="badge bg-success">Upcoming</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Past Event</span>
+                }
+            </p>
+            <p>
+                <strong>Location: </strong> 
+                @if (Event.LocationLink != null)
+                {
+                    <a href="@Event.LocationLink" target="_blank">Airbnb</a>
+                }
+                else
+                {
+                    <span>No Venue Yet</span>
+                }
+            </p>
+        </div>
+        <div class="card-footer">
+            <BringGameForm />
+            <GamesList />
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading event details...</p>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Event Event { get; set; } = new Event
+    {
+        Id = 3,
+        Name = "February 2025",
+        StartDate = new DateTime(2025, 2, 6),
+        EndDate = new DateTime(2025, 2, 10),
+        LocationLink="https://www.airbnb.co.uk/rooms/603983959452545227?source_impression_id=p3_1738253168_P3ZOU_a5XDDs_UeN"
+    };
+}
