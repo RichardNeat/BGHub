@@ -1,18 +1,48 @@
-﻿@using BGHub.Models
+﻿@using BGHub.FE.Models
+@using BGHub.Models
+@using System.Text.Json
+@using System.Xml
+@using Newtonsoft.Json
 
-<li class="mb-3">
-    <div class="card">
-        <div class="card-header bg-light">
-            <h4 class="card-title">@Game.Name</h4>
+<li class="mb-4">
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">@Game.Name</h5>
         </div>
         <div class="card-body">
-            <p class="card-text">Owned by: @Game.Owner.Name</p>
+            <p class="card-text text-muted">Owned by: @Game.Owner.Name</p>
         </div>
+        <img src="@ImageUrl" alt="@Game.Name Image" class="img-fluid rounded mb-3 card-img" />
     </div>
 </li>
 
 @code {
     [Parameter] public Game Game { get; set; }
+    public string ImageUrl { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var client = new HttpClient();
+        string baseurl = "https://boardgamegeek.com/xmlapi/";
 
+        var response = await client.GetAsync($"{baseurl}/boardgame/{Game.BGGId}");
+
+        string xml = await response.Content.ReadAsStringAsync();
+        string json = ConvertXmlToJson(xml);
+        Console.WriteLine(json);
+
+        var deserialisedGame = System.Text.Json.JsonSerializer.Deserialize<BGGResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        ImageUrl = deserialisedGame.Boardgames.Boardgame.Image;
+    }
+
+    public static string ConvertXmlToJson(string xml)
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
+
+        string json = JsonConvert.SerializeXmlNode(xmlDoc, Newtonsoft.Json.Formatting.Indented);
+
+        return json;
+    }
 }

@@ -49,3 +49,24 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.card-img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .card-img {
+        max-height: 250px;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-img {
+        max-height: 300px;
+    }
+}
+
