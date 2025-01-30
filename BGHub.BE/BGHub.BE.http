@@ -1,0 +1,6 @@
+@BGHub.BE_HostAddress = http://localhost:5130
+
+GET {{BGHub.BE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
