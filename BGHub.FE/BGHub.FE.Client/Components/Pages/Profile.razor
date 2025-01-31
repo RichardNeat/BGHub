@@ -1,8 +1,57 @@
 ﻿@page "/profile"
+@using BGHub.FE.Client.Components.ProfileComponents
 @using BGHub.Models
+@rendermode InteractiveServer
 
-<h3>Welcome @loggedInUser.Name!</h3>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-body text-center">
+                    <h4 class="card-title">@loggedInUser.Name</h4>
+                    <p class="text-muted">BGG Username: <strong>@loggedInUser.BGGUsername</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🎲 My Board Games</h5>
+                </div>
+                <div class="card-body">
+                    @if (loggedInUser.Games != null && loggedInUser.Games.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var game in Games)
+                            {
+                                <GameCard Game="game" OnDeleteGame="RemoveGameFromCollection"/>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No games added yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [CascadingParameter] public User loggedInUser { get; set; }
+
+    public List<Game> Games { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Games = loggedInUser.Games;
+    }
+
+    public void RemoveGameFromCollection(int id)
+    {
+        var gameToDelete = Games.FirstOrDefault(g => g.Id == id);
+        Games.Remove(gameToDelete);
+    }
 }

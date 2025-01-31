@@ -69,3 +69,16 @@ h1:focus {
         max-height: 300px;
     }
 }
+
+.delete-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 18px; /* Smaller button */
+    background: transparent;
+    border: none;
+    color: #dc3545; /* Red for the trash icon */
+    cursor: pointer;
+}
+
+s

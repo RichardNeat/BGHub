@@ -1,0 +1,28 @@
+﻿@using BGHub.Models
+@inject IJSRuntime JSRuntime
+
+<button @onclick="ConfirmDeleteGame" class="delete-btn">
+    <i class="bi bi-trash"></i>
+</button>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public string Name { get; set; }
+
+    private async Task ConfirmDeleteGame()
+    {
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Remove {Name} from your collection?");
+
+        if (isConfirmed)
+        {
+            RemoveGameFromCollection();
+        }
+    }
+
+    [Parameter] public EventCallback<int> OnDeleteGame { get; set; }
+
+    private async Task RemoveGameFromCollection()
+    {
+        await OnDeleteGame.InvokeAsync(Id);
+    }
+}
