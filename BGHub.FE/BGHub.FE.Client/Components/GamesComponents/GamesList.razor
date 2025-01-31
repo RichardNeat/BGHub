@@ -8,7 +8,7 @@
             <ul class="list-unstyled">
                 @foreach (Game game in Games)
                 {
-                    <GameCard Game="game"/>
+                    <GameCard Game="game" HandleGameDeleted="DeleteGame"/>
                 }
             </ul>
         }
@@ -21,4 +21,11 @@
 
 @code {
     [Parameter] public List<Game> Games { get; set; }
+
+    [Parameter] public EventCallback<int> HandleGameDeleted { get; set; }
+
+    private async Task DeleteGame(int id)
+    {
+        await HandleGameDeleted.InvokeAsync(id);
+    }
 }

@@ -38,8 +38,8 @@
             </p>
         </div>
         <div class="card-footer">
-            <BringGameForm HandleGameAdded="HandleGameAdded"/>
-            <GamesList Games="Games"/>
+            <BringGameForm EventInventory="Games" HandleGameAdded="HandleGameAdded"/>
+                <GamesList Games="Games" HandleGameDeleted="HandleGameDeleted"/>
         </div>
     </div>
 }
@@ -71,5 +71,12 @@ else
     private void HandleGameAdded(Game game)
     {
         Games.Insert(0, game);
+    }
+    private void HandleGameDeleted(int gameId)
+    {
+        Console.WriteLine("TRIGGERED");
+        var gameToDelete = Games.FirstOrDefault(g => g.Id == gameId);
+        Console.WriteLine(gameId);
+        Games.Remove(gameToDelete);
     }
 }

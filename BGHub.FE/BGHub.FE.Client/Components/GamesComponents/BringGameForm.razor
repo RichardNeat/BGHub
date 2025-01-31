@@ -11,7 +11,9 @@
                     <option disabled selected value="0">-- Select a Game --</option>
                     @foreach (var game in GameCollection)
                     {
-                        <option value="@game.Id">@game.Name</option>
+                        <option disabled="@EventInventory.FirstOrDefault(g => g.Id == game.Id)" value="@game.Id">
+                            @game.Name @(EventInventory.FirstOrDefault(g => g.Id == game.Id) != null ? "(Already on the list!)" : "")
+                        </option>
                     }
                 </InputSelect>
             </div>
@@ -26,20 +28,23 @@
 
     private int selectedGameId { get; set; }
 
+    [Parameter] public List<Game> EventInventory { get; set; }
+
     // Update this to get users game collection from DB
     public List<Game> GameCollection { get; set; } = new List<Game>
     {
         new Game {Id=4, Name="Blood on the Clocktower", Owner=new User{ Id=1, Name="Rich"}, BGGId=240980, ImageUrl="https://cf.geekdo-images.com/HINb2nkFn5IiZxAlzQIs4g__original/img/e7izEwSmnBPiErsIF6hlWbgybBE=/0x0/filters:format(jpeg)/pic7009391.jpg"},
         new Game {Id=5, Name="Legendary Encounters: An Alien Deck Building Game", Owner=new User{ Id=1, Name="Rich"}, BGGId=146652, ImageUrl="https://cf.geekdo-images.com/jSz_KRUxsjGYitoqx9YH1Q__original/img/nrvJtT-4tYTD0fp3Cr57SKpfMfw=/0x0/filters:format(jpeg)/pic2225180.jpg"},
+        new Game {Id=3, Name="Nova Luna", Owner=new User{ Id=1, Name="Rich"}, BGGId=284435, ImageUrl="https://cf.geekdo-images.com/k8OZeKYMN2vVSVCl5FD-UA__original/img/XiytG0d5nHtdoN4Kq3pCM6VcSac=/0x0/filters:format(jpeg)/pic5382418.jpg"}
     };
 
-    [Parameter]
-    public EventCallback<Game> HandleGameAdded { get; set; }
+    [Parameter] public EventCallback<Game> HandleGameAdded { get; set; }
 
     public async Task HandleValidSubmit()
     {
         var selectedGame = GameCollection.FirstOrDefault(g => g.Id == selectedGameId);
         await HandleGameAdded.InvokeAsync(selectedGame);
+        selectedGameId = 0;
         // Call to DB to add game to event
     }
 }
