@@ -1,7 +1,6 @@
 using BGHub.FE.Components;
 using BGHub.Models;
 using Microsoft.AspNetCore.Components;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 

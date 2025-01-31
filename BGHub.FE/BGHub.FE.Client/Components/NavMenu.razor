@@ -57,17 +57,4 @@
         // Implement logout logic here
         Console.WriteLine("User logged out.");
     }
-
-    protected override void OnInitialized()
-    {
-        if (loggedInUser != null)
-        {
-            Console.WriteLine("Logged in");
-            Console.WriteLine(loggedInUser.Name);
-        }
-        else 
-        {
-            Console.WriteLine("Something nulled it");
-        }
-    }
 }
