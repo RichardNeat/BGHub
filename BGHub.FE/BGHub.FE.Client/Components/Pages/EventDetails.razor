@@ -39,7 +39,9 @@
         </div>
         <div class="card-footer">
             <BringGameForm EventInventory="Games" HandleGameAdded="HandleGameAdded"/>
-                <GamesList Games="Games" HandleGameDeleted="HandleGameDeleted"/>
+            <CascadingValue Value="HandleGameDeleted">
+                <GamesList Games="Games"/>
+            </CascadingValue>
         </div>
     </div>
 }

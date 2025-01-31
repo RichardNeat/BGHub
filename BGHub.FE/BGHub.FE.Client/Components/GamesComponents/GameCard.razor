@@ -25,7 +25,7 @@
 
     [Parameter] public Game Game { get; set; }
 
-    [Parameter] public EventCallback<int> HandleGameDeleted { get; set; }
+    [CascadingParameter] public EventCallback<int> HandleGameDeleted { get; set; }
 
     private async Task DeleteGame()
     {
