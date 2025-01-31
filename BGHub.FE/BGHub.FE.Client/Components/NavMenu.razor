@@ -1,0 +1,73 @@
+﻿@using BGHub.Models
+@rendermode InteractiveAuto
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
+    <a class="navbar-brand" href="#">🎲 BGHub 🎲</a>
+
+    <div class="d-flex align-items-center ms-auto">
+        @if (loggedInUser != null)
+        {
+            <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="bi bi-person-circle me-2"></span> @loggedInUser.Name
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><NavLink class="dropdown-item" href="/profile">My Profile</NavLink></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button class="dropdown-item text-danger" @onclick="Logout">Logout</button></li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <NavLink class="btn btn-outline-light" href="/login">
+                <span class="bi bi-box-arrow-in-right"></span> Login
+            </NavLink>
+        }
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="nav-scrollable">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill align-middle"></span> Home
+                    </NavLink>
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/events" Match="NavLinkMatch.All">
+                        <span class="bi bi-calendar-event align-middle"></span> Events
+                    </NavLink>
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/profile" Match="NavLinkMatch.All">
+                        <span class="bi bi-person-circle align-middle"></span> My Profile
+                    </NavLink>
+                </div>
+            </nav>
+        </div>
+    </div>
+</nav>
+
+@code {
+    [CascadingParameter] private User? loggedInUser { get; set; }
+
+    private void Logout()
+    {
+        // Implement logout logic here
+        Console.WriteLine("User logged out.");
+    }
+
+    protected override void OnInitialized()
+    {
+        if (loggedInUser != null)
+        {
+            Console.WriteLine("Logged in");
+            Console.WriteLine(loggedInUser.Name);
+        }
+        else 
+        {
+            Console.WriteLine("Something nulled it");
+        }
+    }
+}

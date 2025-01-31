@@ -1,0 +1,8 @@
+﻿@page "/profile"
+@using BGHub.Models
+
+<h3>Welcome @loggedInUser.Name!</h3>
+
+@code {
+    [CascadingParameter] public User loggedInUser { get; set; }
+}
