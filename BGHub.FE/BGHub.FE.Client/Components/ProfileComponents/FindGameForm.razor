@@ -1,0 +1,134 @@
+﻿@using BGHub.FE.Client.Models
+@using BGHub.Models
+@using Utils
+@using Newtonsoft
+@using System.Xml
+@using Newtonsoft.Json
+@using System.Text.Json
+@rendermode InteractiveAuto
+@inject IJSRuntime JSRuntime
+
+<EditForm FormName="FindGame" Model="Model" OnSubmit="HandleSearchSubmit">
+    <div class="mb-3 position-relative">
+        <label for="gameSearch" class="form-label fw-bold">🔍 Or search for a Game from BGG</label>
+        <div class="input-group">
+            <InputText id="gameSearch" @bind-Value="Model.Name" class="form-control" placeholder="Enter game name..." required />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" disabled="@string.IsNullOrWhiteSpace(Model.Name)" data-bs-toggle="modal" data-bs-target="#gameSelectionModal">
+        <span class="me-2">Search</span>
+        @if (IsLoading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        }
+    </button>
+</EditForm>
+
+<div class="modal fade" id="gameSelectionModal" tabindex="-1" aria-labelledby="gameSelectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="max-height: 400px; overflow-y: auto;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gameSelectionModalLabel">Games Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    @foreach (var game in GameChoices)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>@game.Name.GameName</strong>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                @if (RegisteredGames.FirstOrDefault(g => g.Name == game.Name.GameName) == null)
+                                {
+                                    <button class="btn btn-success btn-sm ms-3 d-flex align-items-center shadow-sm px-3 py-1" @onclick="() => ConfirmAddGame(game.BGGId, game.Name.GameName)">
+                                        <i class="bi bi-check-circle me-2"></i> Add
+                                    </button>
+                                }
+                                else if (loggedInUser.Games.FirstOrDefault(g => g.Name == game.Name.GameName) != null)
+                                {
+                                    <span class="badge bg-secondary ms-3">Already in your collection!</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary ms-3">Already in the BGHub inventory!</span>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    public Game Model { get; set; } = new();
+    public string baseurl = "https://boardgamegeek.com/xmlapi";
+    public HttpClient client = new HttpClient();
+
+    [Parameter] public List<Game> RegisteredGames {get; set;}
+    [Parameter] public EventCallback<Game> OnGameSelected { get; set; }
+
+    [CascadingParameter] User loggedInUser {get; set;}
+
+    public List<Boardgame> GameChoices { get; set; } = new List<Boardgame>();
+
+    private bool IsLoading { get; set; }
+
+    private async Task HandleSearchSubmit()
+    {
+        IsLoading = true;
+
+        var response = await client.GetAsync($"{baseurl}/search?search=\"{Model.Name}\"");
+
+        string xml = await response.Content.ReadAsStringAsync();
+        string json = Utils.ConvertXmlToJson(xml);
+
+        string formattedJson = Utils.ConvertJsonToUniformData(json);
+        Console.WriteLine(formattedJson);
+
+        var deserialisedResponse = System.Text.Json.JsonSerializer.Deserialize<BGGSearchResponse>(formattedJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        GameChoices = deserialisedResponse.Boardgames.Boardgame;
+
+        Model.Name = "";
+        IsLoading = false;
+    }
+
+    private async Task ConfirmAddGame(string bggId, string gameName)
+    {
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Add {gameName} to your collection?");
+
+        if (isConfirmed)
+        {
+            await HandleClick(bggId, gameName);
+        }
+    }
+
+    private async Task HandleClick(string bggId, string gameName)
+    {
+        var response = await client.GetAsync($"{baseurl}/boardgame/{bggId}");
+
+        string xml = await response.Content.ReadAsStringAsync();
+        string json = Utils.ConvertXmlToJson(xml);
+
+        var deserialisedResponse = System.Text.Json.JsonSerializer.Deserialize<BGGGameResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        // Replace with POST request
+        var newGame = new Game
+        {
+            Id = RegisteredGames.Max(g => g.Id) + 1,
+            Name = gameName,
+            Owner = loggedInUser,
+            BGGId = Int32.Parse(bggId),
+            ImageUrl = deserialisedResponse.BoardGamesResponse.BoardGameResponse.ImageUrl
+        };
+
+        await OnGameSelected.InvokeAsync(newGame);
+    }
+}

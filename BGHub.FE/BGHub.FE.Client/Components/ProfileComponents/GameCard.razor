@@ -1,13 +1,14 @@
 ﻿@using BGHub.Models
 
-<li class="list-group-item d-flex align-items-center position-relative">
-    <img src="@Game.ImageUrl" alt="@Game.Name" class="rounded me-3" width="50">
-    <div>
-        <strong>@Game.Name</strong>
-        <p class="text-muted mb-0">BGG ID: @Game.BGGId</p>
+<li class="list-group-item d-flex align-items-center position-relative p-3">
+    <img src="@Game.ImageUrl" alt="@Game.Name" class="rounded me-3 shadow-sm" width="50" height="50" style="object-fit: cover;">
+    <div class="flex-grow-1">
+        <strong class="text-dark fs-6">@Game.Name</strong>
+        <p class="text-muted mb-0 small">BGG ID: @Game.BGGId</p>
     </div>
-    <DeleteGame Id="@Game.Id" Name="@Game.Name" OnDeleteGame="RemoveGameFromCollection"/>
+    <DeleteGame Id="@Game.Id" Name="@Game.Name" OnDeleteGame="RemoveGameFromCollection" />
 </li>
+
 
 @code {
     [Parameter] public Game Game { get; set; }

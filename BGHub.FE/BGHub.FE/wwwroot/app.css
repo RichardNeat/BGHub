@@ -81,4 +81,13 @@ h1:focus {
     cursor: pointer;
 }
 
-s
+.modal-content {
+    max-height: 90vh; /* Ensure modal is not taller than viewport */
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+}

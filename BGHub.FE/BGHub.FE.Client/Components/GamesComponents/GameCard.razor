@@ -1,4 +1,4 @@
-﻿@using BGHub.FE.Models
+﻿@using BGHub.FE.Client.Models
 @using BGHub.Models
 @inject IJSRuntime JSRuntime
 
@@ -26,7 +26,7 @@
 
     [Parameter] public Game Game { get; set; }
 
-    [Parameter] public EventCallback<int> HandleGameDeleted { get; set; }
+    [Parameter] public EventCallback<int> OnGameDeleted { get; set; }
 
     private async Task ConfirmDeleteGame()
     {
@@ -40,7 +40,7 @@
 
     private async Task DeleteGame()
     {
-        await HandleGameDeleted.InvokeAsync(Game.Id);
+        await OnGameDeleted.InvokeAsync(Game.Id);
         // Call to DB to delete game from event
     }
 }

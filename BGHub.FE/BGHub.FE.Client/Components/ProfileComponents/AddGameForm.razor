@@ -1,0 +1,43 @@
+﻿@using BGHub.Models
+
+<div class="card shadow-sm border-0 rounded-lg p-3">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+        <h6 class="mb-0 flex-grow-1">🎲 Add to Your Collection</h6>
+    </div>
+    <div class="card-body">
+        <EditForm FormName="AddGameToCollection" Model="Model" OnValidSubmit="HandleSubmit">
+            <div class="mb-3">
+                <label for="gameSelect" class="form-label fw-bold">Select a Game</label>
+                <InputSelect @bind-Value="selectedGameId" id="gameSelect" class="form-select">
+                    <option selected value="0">-- Select a Game --</option>
+                    @foreach (var game in RegisteredGames)
+                    {
+                        <option disabled="@OwnedGames.Any(g => g.Id == game.Id)" value="@game.Id">
+                            @game.Name @(OwnedGames.Any(g => g.Id == game.Id) ? "(Already added!)" : "")
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+            <button disabled="@(selectedGameId == 0)" type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                <i class="bi bi-plus-circle me-2"></i> Add Game
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    public Game Model { get; set; } = new();
+
+    [Parameter] public List<Game> OwnedGames {get; set;}
+    [Parameter] public EventCallback<int> OnGameAdded { get; set; }
+
+    public int selectedGameId { get; set; }
+
+    [Parameter] public List<Game> RegisteredGames { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnGameAdded.InvokeAsync(selectedGameId);
+        selectedGameId = 0;
+    }
+}

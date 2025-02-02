@@ -1,6 +1,6 @@
 ﻿@using BGHub.Models
 
-<div class="card shadow-sm p-3 mt-4">
+<div class="card shadow-sm p-3 mt-4" style="max-height: 500px; overflow-y: auto;">
     <div class="card-body">
         <h3 class="card-title mb-3">Current Bring List</h3>
         @if (Games.Any())
@@ -8,7 +8,7 @@
             <ul class="list-unstyled">
                 @foreach (Game game in Games)
                 {
-                    <GameCard Game="game" HandleGameDeleted="DeleteGame"/>
+                    <GameCard Game="game" OnGameDeleted="DeleteGame"/>
                 }
             </ul>
         }

@@ -6,32 +6,46 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-lg">
-                <div class="card-body text-center">
-                    <h4 class="card-title">@loggedInUser.Name</h4>
-                    <p class="text-muted">BGG Username: <strong>@loggedInUser.BGGUsername</strong></p>
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4 class="card-title fw-bold">@loggedInUser.Name</h4>
+                    <p class="fs-5">
+                        <i class="bi bi-person-circle me-2"></i>
+                        BGG Username: <strong>@loggedInUser.BGGUsername</strong>
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-8">
-            <div class="card shadow-sm border-0 rounded-lg">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">🎲 My Board Games</h5>
-                </div>
+            <div class="card shadow-lg border-0 rounded-lg">
                 <div class="card-body">
+                    <AddGameForm OwnedGames="loggedInUser.Games" OnGameAdded="AddGameToCollection" RegisteredGames="RegisteredGames" />
+                </div>
+
+                <div class="card-body">
+                    <FindGameForm RegisteredGames="RegisteredGames" OnGameSelected="AddNewGameToRegisteredAndCollection" />
+                </div>
+
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        🎲 My Board Games
+                    </h5>
+                </div>
+
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                     @if (loggedInUser.Games != null && loggedInUser.Games.Any())
                     {
                         <ul class="list-group">
                             @foreach (var game in Games)
                             {
-                                <GameCard Game="game" OnDeleteGame="RemoveGameFromCollection"/>
+                                <GameCard Game="game" OnDeleteGame="RemoveGameFromCollection" />
                             }
                         </ul>
                     }
                     else
                     {
-                        <p class="text-muted">No games added yet.</p>
+                        <p class="text-muted text-center">No games added yet.</p>
                     }
                 </div>
             </div>
@@ -44,6 +58,15 @@
 
     public List<Game> Games { get; set; }
 
+    public List<Game> RegisteredGames { get; set; } = new List<Game>
+    {
+        new Game { Id = 5, Name = "Blood on the Clocktower", Owner = new User{ Id = 1, Name = "Rich"}, BGGId = 240980, ImageUrl = "https://cf.geekdo-images.com/HINb2nkFn5IiZxAlzQIs4g__original/img/e7izEwSmnBPiErsIF6hlWbgybBE=/0x0/filters:format(jpeg)/pic7009391.jpg"},
+        new Game { Id = 4, Name = "Legendary Encounters: An Alien Deck Building Game", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 146652, ImageUrl = "https://cf.geekdo-images.com/jSz_KRUxsjGYitoqx9YH1Q__original/img/nrvJtT-4tYTD0fp3Cr57SKpfMfw=/0x0/filters:format(jpeg)/pic2225180.jpg" },
+        new Game { Id = 3, Name = "Nova Luna", Owner = new User{ Id = 2, Name = "Haz"}, BGGId = 284435, ImageUrl = "https://cf.geekdo-images.com/k8OZeKYMN2vVSVCl5FD-UA__original/img/XiytG0d5nHtdoN4Kq3pCM6VcSac=/0x0/filters:format(jpeg)/pic5382418.jpg"},
+        new Game { Id = 2, Name = "Slay the Spire", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 338960, ImageUrl = "https://cf.geekdo-images.com/PQzVclEoOQ_wr4e1V86kxA__original/img/KXOf1hP1cIJQLabKhZulWP-e9wI=/0x0/filters:format(png)/pic8157856.png" },
+        new Game { Id = 1, Name = "Terraforming Mars", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 167791, ImageUrl = "https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__original/img/thIqWDnH9utKuoKVEUqveDixprI=/0x0/filters:format(jpeg)/pic3536616.jpg" }
+    }; // Replace with db call to get all games
+
     protected override void OnInitialized()
     {
         Games = loggedInUser.Games;
@@ -53,5 +76,17 @@
     {
         var gameToDelete = Games.FirstOrDefault(g => g.Id == id);
         Games.Remove(gameToDelete);
+    }
+
+    public void AddGameToCollection(int id)
+    {
+        var gameToAdd = RegisteredGames.FirstOrDefault(g => g.Id == id);
+        Games.Insert(0, gameToAdd);
+    }
+
+    public void AddNewGameToRegisteredAndCollection(Game newGame)
+    {
+        RegisteredGames.Add(newGame);
+        AddGameToCollection(newGame.Id);
     }
 }
