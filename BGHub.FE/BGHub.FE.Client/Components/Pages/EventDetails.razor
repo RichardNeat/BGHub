@@ -1,7 +1,9 @@
 ﻿@page "/events/{Id:int}"
+@using BGHub.BE.Models
 @using BGHub.FE.Client.Components.GamesComponents
 @using BGHub.Models
 @using Utils
+
 @rendermode InteractiveAuto
 
 @if (IsLoading)
@@ -60,18 +62,13 @@ else
     public bool IsLoading { get; set; } = true;
     public bool IsError { get; set; } = false;
 
+    public HttpClient client { get; set; } = new HttpClient();
+
     public Event Event { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var client = new HttpClient();
-
         var result = await client.GetFromJsonAsync<Event>($"{Utils.BASE_API_URL}/Events/{Id}");
-
-        foreach (var game in result.Inventory)
-        {
-            Console.WriteLine(game.Game.Id + game.Game.Name);
-        }
 
         if (result == null)
         {
@@ -85,9 +82,16 @@ else
         IsLoading = false;
     }
 
-    private void HandleGameAdded(Game game)
+    private async Task HandleGameAdded(Game game)
     {
-        Event.Inventory.Insert(0, new EventGame{ EventId=Event.Id, GameId=game.Id});
+        var eventGameToInsert = new EventGameDTO { EventId = Id, GameId = game.Id};
+
+        var response = await client.PostAsJsonAsync<EventGameDTO>($"{Utils.BASE_API_URL}/EventGames", eventGameToInsert);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<EventGame>();
+        Console.WriteLine(responseContent);
+
+        Event.Inventory.Insert(0, responseContent);
     }
     private void HandleGameDeleted(int gameId)
     {

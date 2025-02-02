@@ -1,4 +1,5 @@
-﻿using BGHub.BE.Repositories;
+﻿using BGHub.BE.Models;
+using BGHub.BE.Repositories;
 using BGHub.Models;
 
 namespace BGHub.BE.Services

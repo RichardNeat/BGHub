@@ -1,4 +1,5 @@
-﻿using BGHub.Models;
+﻿using BGHub.BE.Models;
+using BGHub.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BGHub.BE.Repositories
@@ -10,18 +11,18 @@ namespace BGHub.BE.Repositories
     }
     public class EventRepository : IEventRepository
     {
-        private readonly BGHubDbContext _dbContext;
+        private readonly BGHubDbContext _db;
         public EventRepository(BGHubDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _db = dbContext;
         }
         public IEnumerable<Event> FindAllEvents()
         {
-            return _dbContext.Events;
+            return _db.Events.OrderByDescending(e => e.StartDate);
         }
         public Event? FindEventById(int id)
         {
-            var targetEvent = _dbContext.Events
+            var targetEvent = _db.Events
                 .Include(e => e.Inventory)
                 .ThenInclude(eg => eg.Game)
                 .ThenInclude(eg => eg.Owner)

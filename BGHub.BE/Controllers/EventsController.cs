@@ -1,4 +1,5 @@
-﻿using BGHub.BE.Services;
+﻿using BGHub.BE.Models;
+using BGHub.BE.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGHub.BE.Controllers
