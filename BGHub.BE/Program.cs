@@ -1,15 +1,31 @@
+using BGHub.BE;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<BGHubDbContext>(options =>
+        options.UseInMemoryDatabase("InMemoryDb"));
+}
+else if (builder.Environment.IsProduction())
+{
+    builder.Services.AddDbContext<BGHubDbContext>(options =>
+       options.UseSqlServer("DefaultConnection"));
+}
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<BGHubDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
