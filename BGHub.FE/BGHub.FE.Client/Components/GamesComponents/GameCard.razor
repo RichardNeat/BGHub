@@ -5,15 +5,15 @@
 <li class="mb-4">
     <div class="card shadow-sm rounded">
         <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">@Game.Name</h5>
+            <h5 class="card-title mb-0">@EventGame.Game.Name</h5>
         </div>
         <div class="card-body">
-            <p class="card-text text-muted">Owned by: @Game.Owner.Name</p>
+            <p class="card-text text-muted">Owned by: @EventGame.Game.Owner.Name</p>
         </div>
-        <img src="@Game.ImageUrl" alt="@Game.Name box art" class="img-fluid rounded mb-3 card-img" />
+        <img src="@EventGame.Game.ImageUrl" alt="@EventGame.Game.Name box art" class="img-fluid rounded mb-3 card-img" />
         @if (loggedInUser != null)
         {
-            @if (Game.Owner.Id == loggedInUser.Id)
+            @if (EventGame.Game.Owner.Id == loggedInUser.Id)
             {
                 <button @onclick="ConfirmDeleteGame" class="btn btn-danger btn-sm mt-2">Remove</button>
             }
@@ -24,13 +24,13 @@
 @code {
     [CascadingParameter] private User? loggedInUser { get; set; }
 
-    [Parameter] public Game Game { get; set; }
+    [Parameter] public EventGame EventGame { get; set; }
 
     [Parameter] public EventCallback<int> OnGameDeleted { get; set; }
 
     private async Task ConfirmDeleteGame()
     {
-        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {Game.Name} from this event?");
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {EventGame.Game.Name} from this event?");
 
         if (isConfirmed)
         {
@@ -40,7 +40,6 @@
 
     private async Task DeleteGame()
     {
-        await OnGameDeleted.InvokeAsync(Game.Id);
-        // Call to DB to delete game from event
+        await OnGameDeleted.InvokeAsync(EventGame.Id);
     }
 }

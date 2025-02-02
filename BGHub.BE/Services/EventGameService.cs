@@ -6,7 +6,9 @@ namespace BGHub.BE.Services
 {
     public interface IEventGameService
     {
+        public IEnumerable<EventGame> FindAllEventGames();
         public EventGame InsertGameToEvent(EventGameDTO eventGame);
+        public void RemoveGameFromEvent(int id);
     }
     public class EventGameService : IEventGameService
     {
@@ -18,6 +20,14 @@ namespace BGHub.BE.Services
         public EventGame InsertGameToEvent(EventGameDTO eventGame)
         {
             return _eventRepository.InsertGameToEvent(eventGame);
+        }
+        public void RemoveGameFromEvent(int id)
+        {
+            _eventRepository.RemoveGameFromEvent(id);
+        }
+        public IEnumerable<EventGame> FindAllEventGames()
+        {
+            return _eventRepository.FindAllEventGames();
         }
     }
 }

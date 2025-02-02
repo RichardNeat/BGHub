@@ -89,13 +89,14 @@ else
         var response = await client.PostAsJsonAsync<EventGameDTO>($"{Utils.BASE_API_URL}/EventGames", eventGameToInsert);
 
         var responseContent = await response.Content.ReadFromJsonAsync<EventGame>();
-        Console.WriteLine(responseContent);
 
         Event.Inventory.Insert(0, responseContent);
     }
-    private void HandleGameDeleted(int gameId)
+    private async Task HandleGameDeleted(int id)
     {
-        var gameToDelete = Event.Inventory.FirstOrDefault(g => g.Id == gameId);
+        await client.DeleteAsync($"{Utils.BASE_API_URL}/EventGames/{id}");
+
+        var gameToDelete = Event.Inventory.FirstOrDefault(g => g.Id == id);
         Event.Inventory.Remove(gameToDelete);
     }
 }

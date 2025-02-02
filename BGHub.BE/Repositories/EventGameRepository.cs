@@ -6,7 +6,9 @@ namespace BGHub.BE.Repositories
 {
     public interface IEventGameRepository
     {
+        public IEnumerable<EventGame> FindAllEventGames();
         public EventGame InsertGameToEvent(EventGameDTO eventGame);
+        public void RemoveGameFromEvent(int id);
     }
     public class EventGameRepository : IEventGameRepository
     {
@@ -52,6 +54,16 @@ namespace BGHub.BE.Repositories
                .FirstOrDefault(eg => eg.Id == newEventGame.Id);
 
             return eventGameWithDetails;
+        }
+        public void RemoveGameFromEvent(int id)
+        {
+            var gameToRemove = _db.EventGames.FirstOrDefault(eg => eg.Id == id);
+            _db.EventGames.Remove(gameToRemove);
+            _db.SaveChanges();
+        }
+        public IEnumerable<EventGame>FindAllEventGames()
+        {
+            return _db.EventGames;
         }
     }
 }

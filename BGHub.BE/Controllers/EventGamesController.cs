@@ -13,11 +13,22 @@ namespace BGHub.BE.Controllers
         {
             _eventGameService = eventService;
         }
+        [HttpGet]
+        public IActionResult GetAllGameEvents()
+        {
+            return Ok(_eventGameService.FindAllEventGames());
+        }
         [HttpPost]
         public IActionResult PostGameToEvent(EventGameDTO eventGame)
         {
             var result = _eventGameService.InsertGameToEvent(eventGame);
             return CreatedAtAction(nameof(PostGameToEvent), result);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteGameFromEvent(int id)
+        {
+            _eventGameService.RemoveGameFromEvent(id);
+            return NoContent();
         }
     }
 }
