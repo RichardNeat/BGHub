@@ -87,6 +87,7 @@
     public void AddNewGameToRegisteredAndCollection(Game newGame)
     {
         RegisteredGames.Add(newGame);
+        RegisteredGames.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
         AddGameToCollection(newGame.Id);
     }
 }

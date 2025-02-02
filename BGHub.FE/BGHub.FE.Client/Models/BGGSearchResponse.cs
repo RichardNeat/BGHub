@@ -14,10 +14,12 @@ namespace BGHub.FE.Client.Models
     }
     public class Boardgame
     {
-        [JsonPropertyName("name")]
-        public Name? Name { get; set; }
         [JsonPropertyName("@objectid")]
         public string BGGId { get; set; }
+        [JsonPropertyName("name")]
+        public Name? Name { get; set; }
+        [JsonPropertyName("yearpublished")]
+        public string YearPublished { get; set; }
     }
     public class Name
     {
