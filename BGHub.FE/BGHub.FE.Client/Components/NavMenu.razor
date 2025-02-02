@@ -49,6 +49,18 @@
     </div>
 </nav>
 
+<script>
+    document.addEventListener("click", function (event) {
+        var navbar = document.getElementById("navbarNav");
+        var toggleButton = document.querySelector(".navbar-toggler");
+
+        if (navbar.classList.contains("show") && !navbar.contains(event.target) && !toggleButton.contains(event.target)) {
+            var bsCollapse = new bootstrap.Collapse(navbar, { toggle: false });
+            bsCollapse.hide();
+        }
+    });
+</script>
+
 @code {
     [CascadingParameter] private User? loggedInUser { get; set; }
 
