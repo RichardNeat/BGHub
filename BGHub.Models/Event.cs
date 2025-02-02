@@ -7,7 +7,6 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string LocationLink { get; set; }
-        public List<User> Attendees { get; set; }
-        public List<Game> Inventory { get; set; }
+        public List<EventGame> Inventory { get; set; }
     }
 }

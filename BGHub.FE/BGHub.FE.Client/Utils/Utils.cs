@@ -7,6 +7,7 @@ namespace BGHub.FE.Client.Utils
 {
     public class Utils
     {
+        public const string BASE_API_URL = "https://localhost:7134";
         public static string ConvertXmlToJson(string xml)
         {
             XmlDocument xmlDoc = new XmlDocument();

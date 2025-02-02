@@ -2,7 +2,7 @@
 
 namespace BGHub.BE.Controllers
 {
-    public class GameController : Controller
+    public class UsersController : Controller
     {
         public IActionResult Index()
         {
