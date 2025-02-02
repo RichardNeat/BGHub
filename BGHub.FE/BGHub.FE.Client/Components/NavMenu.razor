@@ -3,14 +3,14 @@
 @inject NavigationManager Navigation
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
-    <a class="navbar-brand" href="/home">🎲 BGHub 🎲</a>
+    <a class="navbar-brand" href="/">🎲 BGHub 🎲</a>
 
     <div class="d-flex align-items-center ms-auto">
         @if (loggedInUser != null)
         {
             <div class="dropdown">
                 <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="bi bi-person-circle me-2"></span> @loggedInUser.Name
+                    <span class="bi bi-person-circle me-2"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><NavLink class="dropdown-item" href="/profile">My Profile</NavLink></li>
@@ -35,13 +35,13 @@
         <div class="nav-scrollable">
             <nav class="flex-column">
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/home" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/" Match="NavLinkMatch.All">
                         <span class="bi bi-house-door-fill align-middle"></span> Home
                     </NavLink>
-                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/events" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href=@(loggedInUser != null ? "/events": "/login") Match="NavLinkMatch.All">
                         <span class="bi bi-calendar-event align-middle"></span> Events
                     </NavLink>
-                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/profile" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href=@(loggedInUser != null ? "/profile": "/login") Match="NavLinkMatch.All">
                         <span class="bi bi-person-circle align-middle"></span> My Profile
                     </NavLink>
                 </div>
@@ -67,7 +67,7 @@
 
     private void Logout()
     {
-        loggedInUser = null;
+        // loggedInUser = null;
         Navigation.NavigateTo("/login");
     }
 }

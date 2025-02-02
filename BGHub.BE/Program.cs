@@ -12,8 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-//builder.Services.AddScoped<IGameService, GameService>();
-//builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 builder.Services.AddScoped<IEventGameService, EventGameService>();
 builder.Services.AddScoped<IEventGameRepository, EventGameRepository>();

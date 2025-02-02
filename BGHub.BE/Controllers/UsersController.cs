@@ -18,7 +18,7 @@ namespace BGHub.BE.Controllers
             return Ok(_userService.FindAllUsers());
         }
         [HttpGet("{id}")]
-        public IActionResult GetAllUsers(int id)
+        public IActionResult GetUserById(int id)
         {
             var result = _userService.FindUserById(id);
             if (result != null)

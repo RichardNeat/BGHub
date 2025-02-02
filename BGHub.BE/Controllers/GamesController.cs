@@ -1,12 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BGHub.BE.Services;
+using BGHub.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BGHub.BE.Controllers
 {
-    public class GamesController : Controller
+    [Route("/[controller]")]
+    [ApiController]
+    public class GamesController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IGameService _gameService;
+        public GamesController(IGameService gameService)
         {
-            return View();
+            _gameService = gameService;
+        }
+        [HttpGet]
+        public IActionResult GetAllGames()
+        {
+            var result = _gameService.FindAllGames();
+            return Ok(result);
+        }
+        [HttpPost]
+        public IActionResult PostGame(GameDTO game)
+        {
+            var result = _gameService.AddGame(game);
+            return CreatedAtAction(nameof(PostGame), result);
         }
     }
 }

@@ -63,6 +63,10 @@
                             </li>
                         }
                     }
+                    else if(IsLoading)
+                    {
+                        <p>Searching...</p>
+                    }
                     else
                     {
                         <p>No Games Found!</p>
@@ -100,7 +104,6 @@
         if (json.Contains("@objectid"))
         {
             string formattedJson = Utils.ConvertJsonToUniformData(json);
-            Console.WriteLine(formattedJson);
 
             var deserialisedResponse = System.Text.Json.JsonSerializer.Deserialize<BGGSearchResponse>(formattedJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
@@ -130,16 +133,17 @@
 
         var deserialisedResponse = System.Text.Json.JsonSerializer.Deserialize<BGGGameResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        // Replace with POST request
-        var newGame = new Game
+        var gameToPost = new GameDTO
         {
-            Id = RegisteredGames.Max(g => g.Id) + 1,
             Name = gameName,
-            Owner = loggedInUser,
+            OwnerId = loggedInUser.Id,
             BGGId = Int32.Parse(bggId),
             ImageUrl = deserialisedResponse.BoardGamesResponse.BoardGameResponse.ImageUrl
         };
+        var postResponse = await client.PostAsJsonAsync<GameDTO>($"{Utils.BASE_API_URL}/Games", gameToPost);
 
-        await OnGameSelected.InvokeAsync(newGame);
+        var responseContent = await postResponse.Content.ReadFromJsonAsync<Game>();
+
+        await OnGameSelected.InvokeAsync(responseContent);
     }
 }

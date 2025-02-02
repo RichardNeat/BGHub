@@ -1,0 +1,45 @@
+﻿@page "/login"
+@using Utils
+@using BGHub.Models
+@inject NavigationManager Navigation
+@rendermode InteractiveAuto
+
+@if (IsLoading)
+{
+    <p>Fetching users...</p>
+}
+else
+{
+    @foreach (var user in Users)
+    {
+        <h5>Log in to interact with this content</h5>
+        <h6>@user.Name</h6>
+        <button @onclick="() => HandleLogin(user.Id)">Login</button>
+    }
+}
+
+@code {
+    public List<User> Users { get; set; }
+    [CascadingParameter] public User loggedInUser {get; set;}
+
+    public bool IsLoading { get; set; } = true;
+
+    public HttpClient client { get; set; } = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await client.GetFromJsonAsync<List<User>>($"{Utils.BASE_API_URL}/Users");
+        Users = result;
+        IsLoading = false;
+    }
+
+    public async Task HandleLogin(int id)
+    {
+        var result = await client.GetFromJsonAsync<User>($"{Utils.BASE_API_URL}/Users/{id}");
+        loggedInUser.Id = result.Id;
+        loggedInUser.Name = result.Name;
+        loggedInUser.BGGUsername = result.BGGUsername;
+        loggedInUser.Games = result.Games;
+        Navigation.NavigateTo($"/profile?user={id}");
+    }
+}

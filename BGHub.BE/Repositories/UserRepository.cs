@@ -22,21 +22,21 @@ namespace BGHub.BE.Repositories
         public User? FindUserById(int id)
         {
             var user = _db.Users
-                .Where(u => u.Id == id)
                 .Select(u => new User
                 {
                     Id = u.Id,
                     Name = u.Name,
-                    BGGUsername = u.BGGUsername,
                     Games = u.Games.Select(g => new Game
                     {
                         Id = g.Id,
                         Name = g.Name,
+                        OwnerId = g.OwnerId,
                         ImageUrl = g.ImageUrl,
-                        BGGId = g.BGGId,
-                    }).ToList()
+                        BGGId = g.BGGId
+                    }).ToList(),
+                    BGGUsername = u.BGGUsername,
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(u => u.Id == id);
             return user;
         }
     }
