@@ -1,12 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BGHub.BE.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BGHub.BE.Controllers
 {
-    public class UsersController : Controller
+    [Route("/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService)
         {
-            return View();
+            _userService = userService;
+        }
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            return Ok(_userService.FindAllUsers());
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetAllUsers(int id)
+        {
+            var result = _userService.FindUserById(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else 
+            {
+                return NotFound("User not found");
+            }
         }
     }
 }

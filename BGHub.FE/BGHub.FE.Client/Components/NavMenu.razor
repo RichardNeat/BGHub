@@ -1,8 +1,9 @@
 ﻿@using BGHub.Models
 @rendermode InteractiveAuto
+@inject NavigationManager Navigation
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
-    <a class="navbar-brand" href="#">🎲 BGHub 🎲</a>
+    <a class="navbar-brand" href="/home">🎲 BGHub 🎲</a>
 
     <div class="d-flex align-items-center ms-auto">
         @if (loggedInUser != null)
@@ -34,7 +35,7 @@
         <div class="nav-scrollable">
             <nav class="flex-column">
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link d-flex align-items-center gap-2" href="" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="/home" Match="NavLinkMatch.All">
                         <span class="bi bi-house-door-fill align-middle"></span> Home
                     </NavLink>
                     <NavLink class="nav-link d-flex align-items-center gap-2" href="/events" Match="NavLinkMatch.All">
@@ -55,8 +56,8 @@
         var toggleButton = document.querySelector(".navbar-toggler");
 
         if (navbar.classList.contains("show") && !navbar.contains(event.target) && !toggleButton.contains(event.target)) {
-            var bsCollapse = new bootstrap.Collapse(navbar, { toggle: false });
-            bsCollapse.hide();
+        var bsCollapse = new bootstrap.Collapse(navbar, { toggle: false });
+        bsCollapse.hide();
         }
     });
 </script>
@@ -66,7 +67,7 @@
 
     private void Logout()
     {
-        // Implement logout logic here
-        Console.WriteLine("User logged out.");
+        loggedInUser = null;
+        Navigation.NavigateTo("/login");
     }
 }

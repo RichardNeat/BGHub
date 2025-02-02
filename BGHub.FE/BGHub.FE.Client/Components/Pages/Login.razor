@@ -1,0 +1,71 @@
+﻿@page "/"
+@page "/login"
+@using BGHub.Models
+@using Utils
+@rendermode InteractiveAuto
+
+@if (IsLoading)
+{
+    <p>Fetching users...</p>
+}
+else if (IsError)
+{
+    <p>Error fetching users please try again</p>
+}
+else
+{
+    <ul>
+        @foreach (var user in Users)
+        {
+            <li>
+                <h6>@user.Name</h6>
+                <button @onclick="() => HandleLogin(user.Id)">Login</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    public List<User> Users { get; set; }
+    public bool IsLoading { get; set; } = true;
+    public bool IsError { get; set; } = false;
+    public HttpClient client { get; set; } = new HttpClient();
+
+    [CascadingParameter] public User loggedInUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await client.GetFromJsonAsync<List<User>>($"{Utils.BASE_API_URL}/Users");
+
+            Users = result;
+        }
+        catch
+        {
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public async Task HandleLogin(int id)
+    {
+        try
+        {
+            var result = await client.GetFromJsonAsync<User>($"{Utils.BASE_API_URL}/Users/{id}");
+
+            loggedInUser = result; // not working
+        }
+        catch
+        {
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

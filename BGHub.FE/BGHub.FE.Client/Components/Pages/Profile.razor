@@ -37,7 +37,7 @@
                     @if (loggedInUser.Games != null && loggedInUser.Games.Any())
                     {
                         <ul class="list-group">
-                            @foreach (var game in Games)
+                            @foreach (var game in loggedInUser.Games)
                             {
                                 <GameCard Game="game" OnDeleteGame="RemoveGameFromCollection" />
                             }
@@ -56,8 +56,6 @@
 @code {
     [CascadingParameter] public User loggedInUser { get; set; }
 
-    public List<Game> Games { get; set; }
-
     public List<Game> RegisteredGames { get; set; } = new List<Game>
     {
         new Game { Id = 5, Name = "Blood on the Clocktower", Owner = new User{ Id = 1, Name = "Rich"}, BGGId = 240980, ImageUrl = "https://cf.geekdo-images.com/HINb2nkFn5IiZxAlzQIs4g__original/img/e7izEwSmnBPiErsIF6hlWbgybBE=/0x0/filters:format(jpeg)/pic7009391.jpg"},
@@ -67,27 +65,22 @@
         new Game { Id = 1, Name = "Terraforming Mars", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 167791, ImageUrl = "https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__original/img/thIqWDnH9utKuoKVEUqveDixprI=/0x0/filters:format(jpeg)/pic3536616.jpg" }
     }; // Replace with db call to get all games
 
-    protected override void OnInitialized()
-    {
-        Games = loggedInUser.Games;
-    }
-
     public void RemoveGameFromCollection(int id)
     {
-        var gameToDelete = Games.FirstOrDefault(g => g.Id == id);
-        Games.Remove(gameToDelete);
+        var gameToDelete = loggedInUser.Games.FirstOrDefault(g => g.Id == id);
+        loggedInUser.Games.Remove(gameToDelete);
     }
 
     public void AddGameToCollection(int id)
     {
         var gameToAdd = RegisteredGames.FirstOrDefault(g => g.Id == id);
-        Games.Insert(0, gameToAdd);
+        loggedInUser.Games.Insert(0, gameToAdd);
     }
 
     public void AddNewGameToRegisteredAndCollection(Game newGame)
     {
         RegisteredGames.Add(newGame);
-        RegisteredGames.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
+        RegisteredGames.OrderBy(g => g.Name);
         AddGameToCollection(newGame.Id);
     }
 }
