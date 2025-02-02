@@ -1,9 +1,18 @@
 ﻿@page "/events/{Id:int}"
 @using BGHub.FE.Client.Components.GamesComponents
 @using BGHub.Models
+@using Utils
 @rendermode InteractiveAuto
 
-@if (Event != null)
+@if (IsLoading)
+{
+    <p>Loading event details...</p>
+}
+else if (IsError)
+{
+    <p>Error fetching events. Please refresh and try again.</p>
+}
+else
 {
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
@@ -38,39 +47,47 @@
             </p>
         </div>
         <div class="card-footer">
-            <BringGameForm EventInventory="Games" HandleGameAdded="HandleGameAdded"/>
-            <GamesList Games="Games" HandleGameDeleted="HandleGameDeleted"/>
+            <BringGameForm EventInventory="Event.Inventory" HandleGameAdded="HandleGameAdded"/>
+            <GamesList EventGames="Event.Inventory" HandleGameDeleted="HandleGameDeleted"/>
         </div>
     </div>
+
 }
-else
-{
-    <p>Loading event details...</p>
-}
+
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
+    public bool IsLoading { get; set; } = true;
+    public bool IsError { get; set; } = false;
 
-    private Event Event { get; set; } = new Event
-    {
-        Id = 3,
-        Name = "February 2025",
-        StartDate = new DateTime(2025, 2, 6),
-        EndDate = new DateTime(2025, 2, 10),
-        LocationLink="https://www.airbnb.co.uk/rooms/603983959452545227?source_impression_id=p3_1738253168_P3ZOU_a5XDDs_UeN",
-    };
+    public Event Event { get; set; }
 
-    private List<Game> Games { get; set; } = new List<Game>
+    protected override async Task OnInitializedAsync()
     {
-        new Game {Id=3, Name="Nova Luna", Owner=new User{ Id=2, Name="Haz"}, BGGId=284435, ImageUrl="https://cf.geekdo-images.com/k8OZeKYMN2vVSVCl5FD-UA__original/img/XiytG0d5nHtdoN4Kq3pCM6VcSac=/0x0/filters:format(jpeg)/pic5382418.jpg"},
-        new Game { Id = 2, Name = "Slay the Spire", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 338960, ImageUrl = "https://cf.geekdo-images.com/PQzVclEoOQ_wr4e1V86kxA__original/img/KXOf1hP1cIJQLabKhZulWP-e9wI=/0x0/filters:format(png)/pic8157856.png" },
-        new Game { Id = 1, Name = "Terraforming Mars", Owner = new User { Id = 1, Name = "Rich" }, BGGId = 167791, ImageUrl = "https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__original/img/thIqWDnH9utKuoKVEUqveDixprI=/0x0/filters:format(jpeg)/pic3536616.jpg" }
-    };
+        var client = new HttpClient();
+
+        var result = await client.GetFromJsonAsync<Event>($"{Utils.BASE_API_URL}/Events/{Id}");
+
+        foreach (var game in result.Inventory)
+        {
+            Console.WriteLine(game.Game.Id + game.Game.Name);
+        }
+
+        if (result == null)
+        {
+            IsError = true;
+        }
+        else
+        {
+            Event = result;
+        }
+
+        IsLoading = false;
+    }
 
     private void HandleGameAdded(Game game)
     {
-        Games.Insert(0, game);
+        Event.Inventory.Insert(0, new EventGame{ EventId=Event.Id, GameId=game.Id});
     }
     private void HandleGameDeleted(int gameId)
     {

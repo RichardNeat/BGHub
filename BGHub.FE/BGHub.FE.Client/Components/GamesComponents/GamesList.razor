@@ -1,26 +1,30 @@
 ﻿@using BGHub.Models
+@rendermode InteractiveAuto
 
 <div class="card shadow-sm p-3 mt-4" style="max-height: 500px; overflow-y: auto;">
     <div class="card-body">
         <h3 class="card-title mb-3">Current Bring List</h3>
-        @if (Games.Any())
+        @if (EventGames != null)
         {
-            <ul class="list-unstyled">
-                @foreach (Game game in Games)
-                {
-                    <GameCard Game="game" OnGameDeleted="DeleteGame"/>
-                }
-            </ul>
-        }
-        else
-        {
-            <p class="text-muted">No games have been added yet. Be the first to bring one!</p>
+            @if (EventGames.Any())
+            {
+                <ul class="list-unstyled">
+                    @foreach (EventGame game in EventGames)
+                    {
+                        <GameCard Game="game.Game" OnGameDeleted="DeleteGame"/>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">No games have been added yet. Be the first to bring one!</p>
+            }
         }
     </div>
 </div>
 
 @code {
-    [Parameter] public List<Game> Games { get; set; }
+    [Parameter] public List<EventGame> EventGames { get; set; }
 
     [Parameter] public EventCallback<int> HandleGameDeleted { get; set; }
 

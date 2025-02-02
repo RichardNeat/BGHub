@@ -1,7 +1,7 @@
 ﻿@using BGHub.Models
 @rendermode InteractiveAuto
 
-@if (loggedInUser != null)
+@if (loggedInUser != null & EventInventory != null)
 {
     <div class="card shadow-sm p-3 mt-4 mb-4">
         <div class="card-body">
@@ -9,15 +9,15 @@
 
             <EditForm Model="Model" OnValidSubmit="HandleValidSubmit" FormName="BringGame">
                 <div class="mb-3">
-                        <InputSelect @bind-Value="selectedGameId" id="gameSelect" class="form-select">
-                            <option selected value="0">-- Select a Game --</option>
-                            @foreach (var game in loggedInUser.Games)
-                            {
-                                <option disabled="@EventInventory.FirstOrDefault(g => g.Id == game.Id)" value="@game.Id">
-                                    @game.Name @(EventInventory.FirstOrDefault(g => g.Id == game.Id) != null ? "(Already on the list!)" : "")
-                                </option>
-                            }
-                        </InputSelect>
+                    <InputSelect @bind-Value="selectedGameId" id="gameSelect" class="form-select">
+                        <option selected value="0">-- Select a Game --</option>
+                        @foreach (var game in loggedInUser.Games)
+                        {
+                            <option disabled="@EventInventory.FirstOrDefault(g => g.Game.Id == game.Id)" value="@game.Id">
+                                @game.Name @(EventInventory.FirstOrDefault(g => g.Game.Id == game.Id) != null ? "(Already on the list!)" : "")
+                            </option>
+                        }
+                    </InputSelect>
                 </div>
 
                 <button type="submit" disabled="@(selectedGameId == 0)" class="btn btn-primary w-100">Add Game</button>
@@ -35,7 +35,7 @@ else
 
     private int selectedGameId { get; set; }
 
-    [Parameter] public List<Game> EventInventory { get; set; }
+    [Parameter] public List<EventGame> EventInventory { get; set; }
 
     [CascadingParameter] private User? loggedInUser { get; set; }
 
@@ -46,6 +46,5 @@ else
         var selectedGame = loggedInUser.Games.FirstOrDefault(g => g.Id == selectedGameId);
         await HandleGameAdded.InvokeAsync(selectedGame);
         selectedGameId = 0;
-        // Call to DB to add game to event
     }
 }
