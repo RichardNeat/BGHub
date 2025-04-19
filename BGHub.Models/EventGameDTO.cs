@@ -1,4 +1,4 @@
-﻿namespace BGHub.BE.Models
+﻿namespace BGHub.Models
 {
     public class EventGameDTO
     {
