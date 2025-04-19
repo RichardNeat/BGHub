@@ -35,7 +35,8 @@ namespace BGHub.BE
             modelBuilder.Entity<Event>().HasData(
                 new Event { Id = 1, Name = "February 2024", StartDate = new DateTime(2024, 2, 6), EndDate = new DateTime(2024, 2, 10), LocationLink = "The Manor" },
                 new Event { Id = 2, Name = "October 2024", StartDate = new DateTime(2024, 10, 27), EndDate = new DateTime(2024, 10, 31), LocationLink = "The Manor" },
-                new Event { Id = 3, Name = "February 2025", StartDate = new DateTime(2025, 2, 6), EndDate = new DateTime(2025, 2, 10), LocationLink = "https://www.airbnb.co.uk/rooms/603983959452545227?source_impression_id=p3_1738253168_P3ZOU_a5XDDs_UeN" }
+                new Event { Id = 3, Name = "February 2025", StartDate = new DateTime(2025, 2, 6), EndDate = new DateTime(2025, 2, 10), LocationLink = "https://www.airbnb.co.uk/rooms/603983959452545227?source_impression_id=p3_1738253168_P3ZOU_a5XDDs_UeN" },
+                new Event { Id = 4, Name = "October 2025", StartDate = new DateTime(2025, 10, 30), EndDate = new DateTime(2025, 11, 3), LocationLink = "TBD" }
             );
 
             modelBuilder.Entity<Game>().HasData(
