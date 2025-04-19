@@ -5,6 +5,23 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevLocalhostPolicy", policy =>
+    {
+        policy.SetIsOriginAllowed(origin =>
+            origin.StartsWith("https://localhost"))
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+    options.AddPolicy("StrictProductionPolicy", policy =>
+    {
+        policy.WithOrigins("") // Hosted frontend url will go here
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,11 +45,20 @@ if (builder.Environment.IsDevelopment())
 }
 else if (builder.Environment.IsProduction())
 {
-    builder.Services.AddDbContext<BGHubDbContext>(options =>
-       options.UseSqlServer("DefaultConnection"));
+    // Live production DB creation currently in progress
 }
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("DevLocalhostPolicy");
+}
+else
+{
+    app.UseCors("StrictProductionPolicy");
+}
+
 
 using (var scope = app.Services.CreateScope())
 {
