@@ -1,5 +1,4 @@
-﻿using BGHub.BE.Models;
-using BGHub.Models;
+﻿using BGHub.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BGHub.BE.Repositories

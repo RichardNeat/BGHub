@@ -1,4 +1,4 @@
-﻿using BGHub.BE.Models;
+﻿using BGHub.Models;
 using BGHub.BE.Services;
 using Microsoft.AspNetCore.Mvc;
 
