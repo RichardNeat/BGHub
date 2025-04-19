@@ -13,7 +13,7 @@ In the meantime to view the project clone down the repos and run first the backe
 - Built with **ASP.NET Core**, following the **MVC model** with decoupled layers utilizing dependency injection.
 - Uses **Entity Framework** as an ORM to map database tables to C# classes.
 - Connected to an **In-Memory** database for testing purposes allowing anyone to demo the site with seeded data.
-- Unit tests implemented using **NUnit** and **MOQ**, ensuring isolated testing of service layer methods.
+- Unit tests implemented using **NUnit** and **MOQ**, ensuring isolated testing of methods.
 
 ---
 
